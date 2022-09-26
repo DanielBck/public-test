@@ -2,7 +2,7 @@
     <body>
         <div>B</div>
         <div>Offer:</div>
-        <textarea cols="120" rows="20" id="offer">{"type":"offer","sdp":"v=0\r\no=- 7010564245867949543 2 IN IP4 127.0.0.1\r\ns=-\r\nt=0 0\r\na=group:BUNDLE 0\r\na=extmap-allow-mixed\r\na=msid-semantic: WMS\r\nm=application 9 UDP/DTLS/SCTP webrtc-datachannel\r\nc=IN IP4 0.0.0.0\r\na=ice-ufrag:yrUp\r\na=ice-pwd:wo8aSDFhwW3jvguSBu9a9eu6\r\na=ice-options:trickle\r\na=fingerprint:sha-256 CD:24:2D:FD:58:AC:98:DA:F0:DF:70:87:8C:F0:ED:C8:CE:36:58:35:BE:4C:BB:3C:83:83:66:88:93:F4:32:A5\r\na=setup:actpass\r\na=mid:0\r\na=sctp-port:5000\r\na=max-message-size:262144\r\n"}</textarea>
+        <textarea cols="120" rows="20" id="offer"></textarea>
         <button type="button" onclick="getCandidates()">Get candidates</button>
         <!-- <button type="button" onclick="createAnswer()">Create Answer</button> -->
         <div>Answer:</div>
@@ -10,6 +10,8 @@
         <div id="answerFormatted">Form</div>
         <button type="button" onclick="copyAnswer()">Copy Answer</button>
         <div id="connectionStats"></div>
+        <textarea cols="60" rows="5" id="send"></textarea>
+        <button type="button" onclick="sendToA()">Send to A</button>
         <div>From A:</div>
         <div id="fromA"></div>
         <script type="text/javascript">
@@ -70,7 +72,7 @@
             }
 
             function getConnectionDetails() {
-                lc.getStats(function(stats){
+                rc.getStats(function(stats){
                     console.log("Got stats!")
                     var pair = stats.result().filter(function(r) {
                          return r.type == "googCandidatePair";
@@ -85,6 +87,11 @@
                         }
                     });
                 })
+            }
+
+            function sendToA() {
+                var text = document.getElementById("send").value
+                rc.dc.send(text);
             }
             // lc.onicecandidate = e => console.log("New ice candidate. Reprinting SDP" + JSON.stringify(lc.localDescription))
 
