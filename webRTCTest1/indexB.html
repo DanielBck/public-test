@@ -12,7 +12,7 @@
         <div id="connectionStats"></div>
         <textarea cols="60" rows="5" id="send"></textarea>
         <button type="button" onclick="sendToA()">Send to A</button>
-        <div>From A:</div>
+        <div>From A1:</div>
         <div id="fromA"></div>
         <script type="text/javascript">
             var pc_config = {
@@ -82,9 +82,9 @@
                     pair[0].names().forEach(element => {
                         var stat = pair[0].stat(element);
                         console.log(element + ":" + stat)
-                        if (element == "googLocalAddress" || element == "googRemoteAddress") {
+                        //if (element == "googLocalAddress" || element == "googRemoteAddress") {
                             connectionStatsDiv.innerHTML = connectionStatsDiv.innerHTML.concat(element + ": " + stat + "<br />")
-                        }
+                        //}
                     });
                 })
             }
