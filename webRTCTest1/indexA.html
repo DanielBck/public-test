@@ -1,0 +1,51 @@
+<html>
+    <body>
+        <div>A</div>
+        <p>Offer:</p>
+        <div id="offer"></div>
+        <div id="offerFormatted"></div>
+        <textarea cols="120" rows="20" id="answerFromB"></textarea>
+        <button type="button" onclick="connect()">Connect</button>
+        <script type="text/javascript">
+            var pc_config = {
+                'iceServers' : [ {
+                    'urls' : 'stun:stun1.l.google.com:19302'
+                }
+                ,
+                {
+                urls: "turn:openrelay.metered.ca:80",
+                username: "openrelayproject",
+                credential: "openrelayproject",
+                }
+                ]
+            };
+
+            const lc = new RTCPeerConnection(pc_config);
+            lc.onicecandidate = e => {
+                let str = JSON.stringify(lc.localDescription)
+                console.log("New ice candidate. Reprinting SDP" + str)
+                var offerElement = document.getElementById("offer");
+                offerElement.innerHTML = str;
+
+                str = str.split("\\r\\n").join("<br />"); 
+                var offerFormattedElement = document.getElementById("offerFormatted");
+                offerFormattedElement.innerHTML = str;
+            }
+
+            const dc = lc.createDataChannel("channel");
+            dc.onmessage = e => console.log("Just got a message " + e.data);
+            dc.onopen = e => console.log("Connection opened!");
+
+            lc.createOffer().then(o => {
+                lc.setLocalDescription(o);                                
+            }).then(a => {
+                console.log("set successfully")                
+            })
+
+            function connect() {
+                let answer = JSON.parse(document.getElementById("answerFromB").value);
+                lc.setRemoteDescription(answer)
+            }
+        </script>
+    </body>
+</html>
