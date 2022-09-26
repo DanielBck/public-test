@@ -9,6 +9,7 @@
         <div id="answer"></div>
         <div id="answerFormatted">Form</div>
         <button type="button" onclick="copyAnswer()">Copy Answer</button>
+        <div id="connectionStats"></div>
         <div>From A:</div>
         <div id="fromA"></div>
         <script type="text/javascript">
@@ -51,6 +52,7 @@
                     }
                     rc.dc.onopen = e => { 
                         console.log("Connection Opened!!!!")
+                        getConnectionDetails();
                     }
                 }
 
@@ -67,6 +69,23 @@
                 navigator.clipboard.writeText(answer);
             }
 
+            function getConnectionDetails() {
+                lc.getStats(function(stats){
+                    console.log("Got stats!")
+                    var pair = stats.result().filter(function(r) {
+                         return r.type == "googCandidatePair";
+                    });
+
+                    var connectionStatsDiv = document.getElementById("connectionStats");
+                    pair[0].names().forEach(element => {
+                        var stat = pair[0].stat(element);
+                        console.log(element + ":" + stat)
+                        if (element == "googLocalAddress" || element == "googRemoteAddress") {
+                            connectionStatsDiv.innerHTML = connectionStatsDiv.innerHTML.concat(element + ": " + stat + "<br />")
+                        }
+                    });
+                })
+            }
             // lc.onicecandidate = e => console.log("New ice candidate. Reprinting SDP" + JSON.stringify(lc.localDescription))
 
             // const dc = lc.createDataChannel("channel");

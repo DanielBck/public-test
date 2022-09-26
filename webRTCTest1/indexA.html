@@ -7,6 +7,7 @@
         <button type="button" onclick="copyOffer()">Copy Offer</button><br/>
         <textarea cols="120" rows="20" id="answerFromB"></textarea><br/>
         <button type="button" onclick="connect()">Connect</button>
+        <div id="connectionStats"></div>
         <script type="text/javascript">
             var pc_config = {
                 'iceServers' : [ {
@@ -35,7 +36,10 @@
 
             const dc = lc.createDataChannel("channel");
             dc.onmessage = e => console.log("Just got a message " + e.data);
-            dc.onopen = e => console.log("Connection opened!");
+            dc.onopen = e => {
+                console.log("Connection opened!");
+                getConnectionDetails();
+            }
 
             lc.createOffer().then(o => {
                 lc.setLocalDescription(o);                                
@@ -59,11 +63,15 @@
                     console.log("Got stats!")
                     var pair = stats.result().filter(function(r) {
                          return r.type == "googCandidatePair";
-                        });
+                    });
 
+                    var connectionStatsDiv = document.getElementById("connectionStats");
                     pair[0].names().forEach(element => {
                         var stat = pair[0].stat(element);
                         console.log(element + ":" + stat)
+                        if (element == "googLocalAddress" || element == "googRemoteAddress") {
+                            connectionStatsDiv.innerHTML = connectionStatsDiv.innerHTML.concat(element + ": " + stat + "<br />")
+                        }
                     });
                 })
             }
