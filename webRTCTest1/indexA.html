@@ -4,7 +4,8 @@
         <p>Offer:</p>
         <div id="offer"></div>
         <div id="offerFormatted"></div>
-        <textarea cols="120" rows="20" id="answerFromB"></textarea>
+        <button type="button" onclick="copyOffer()">Copy Offer</button><br/>
+        <textarea cols="120" rows="20" id="answerFromB"></textarea><br/>
         <button type="button" onclick="connect()">Connect</button>
         <script type="text/javascript">
             var pc_config = {
@@ -41,10 +42,30 @@
             }).then(a => {
                 console.log("set successfully")                
             })
-
+            
             function connect() {
                 let answer = JSON.parse(document.getElementById("answerFromB").value);
                 lc.setRemoteDescription(answer)
+            }
+
+            function copyOffer() {
+                var offer = document.getElementById("offer").innerHTML                
+
+                navigator.clipboard.writeText(offer);
+            }
+
+            function getConnectionDetails() {
+                lc.getStats(function(stats){
+                    console.log("Got stats!")
+                    var pair = stats.result().filter(function(r) {
+                         return r.type == "googCandidatePair";
+                        });
+
+                    pair[0].names().forEach(element => {
+                        var stat = pair[0].stat(element);
+                        console.log(element + ":" + stat)
+                    });
+                })
             }
         </script>
     </body>
